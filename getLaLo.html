@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+    integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
   <title>My Geocode App</title>
 </head>
+
 <body>
   <div class="container">
     <h2 id="text-center">Enter Location: </h2>
@@ -18,7 +21,7 @@
       <button type="submit" class="btn btn-primary btn-block">Submit</button>
     </form>
     <div class="card-block" id="events"></div>
-
+    <div class="card-block" id="id"></div>
 
   </div>
 
@@ -32,91 +35,97 @@
     // Listen for submiot
     locationForm.addEventListener('submit', geocode);
 
-    function geocode(e){
+    function geocode(e) {
       // Prevent actual submit
       e.preventDefault();
 
       var location = document.getElementById('location-input').value;
 
-      axios.get('https://maps.googleapis.com/maps/api/geocode/json',{
-        params:{
-          address:location,
-          key:'AIzaSyAEhxtMzG56_yTDfksqTnV60CD-CGr8k4s'
+      axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
+        params: {
+          address: location,
+          key: 'AIzaSyAEhxtMzG56_yTDfksqTnV60CD-CGr8k4s'
         }
       })
-      .then(function(response){
-        // Log full response
-        console.log(response);
+        .then(function (response) {
+          // Log full response
+          console.log(response);
 
-        // Formatted Address
-        var formattedAddress = response.data.results[0].formatted_address;
-        var formattedAddressOutput = `
+          // Formatted Address
+          var formattedAddress = response.data.results[0].formatted_address;
+          var formattedAddressOutput = `
           <ul class="list-group">
             <li class="list-group-item">${formattedAddress}</li>
           </ul>
         `;
 
-        // Address Components
-        var addressComponents = response.data.results[0].address_components;
-        var addressComponentsOutput = '<ul class="list-group">';
-        for(var i = 0;i < addressComponents.length;i++){
-          addressComponentsOutput += `
+          // Address Components
+          var addressComponents = response.data.results[0].address_components;
+          var addressComponentsOutput = '<ul class="list-group">';
+          for (var i = 0; i < addressComponents.length; i++) {
+            addressComponentsOutput += `
             <li class="list-group-item"><strong>${addressComponents[i].types[0]}</strong>: ${addressComponents[i].long_name}</li>
           `;
-        }
-        addressComponentsOutput += '</ul>';
+          }
+          addressComponentsOutput += '</ul>';
 
-        // Geometry
-        var lat = response.data.results[0].geometry.location.lat;
-        var lng = response.data.results[0].geometry.location.lng;
-        var geometryOutput = `
+          // Geometry
+          var lat = response.data.results[0].geometry.location.lat;
+          var lng = response.data.results[0].geometry.location.lng;
+          var geometryOutput = `
           <ul class="list-group">
             <li class="list-group-item"><strong>Latitude</strong>: ${lat}</li>
             <li class="list-group-item"><strong>Longitude</strong>: ${lng}</li>
           </ul>
         `;
-			       var jsonData =[];
+          var jsonData = [];
+          var jsonID = [];
 
-        var combinedCoords = lat + "," + lng;
-        $.ajax({
-          type:"GET",
-          url:"https://app.ticketmaster.com/discovery/v2/events.json?apikey=bXjttOho3RvIAZAjzKZpfVgg4gbFFMcv&latlong=" + combinedCoords,
-          async:true,
-          dataType: "json",
-          success: function(json) {
+          var combinedCoords = lat + "," + lng;
+          $.ajax({
+            type: "GET",
+            url: "https://app.ticketmaster.com/discovery/v2/events.json?apikey=bXjttOho3RvIAZAjzKZpfVgg4gbFFMcv&latlong=" + combinedCoords,
+            async: true,
+            dataType: "json",
+            success: function (json) {
               console.log(json);
               // Parse the response.
               var e = document.getElementById("events");
               showEvents(json);
-			  document.getElementById('events').innerHTML = jsonData.join("<br/>");
-;
+              document.getElementById('events').innerHTML = jsonData.join("<br/>");
+              document.getElementById('id').innerHTML = jsonID.join("<br/>");
+              ;
 
               // Do other things.
-           },
-          error: function(xhr, status, err) {
+            },
+            error: function (xhr, status, err) {
               // This time, we do not end up here!
               console.log(error);
-           }
-        })
-        function showEvents(json){
-          for(var i = 0; i < json.page.size; i++){
-			jsonData.push(json._embedded.events[i].name );
-
+            }
+          })
+          function showEvents(json) {
+            for (var i = 0; i < json.page.size; i++) {
+              jsonData.push(json._embedded.events[i].name);
+              jsonID.push(json._embedded.events[i].id);
+              console.log(jsonID);
+            }
           }
-        }
-          
-
-        console.log(jsonData);
 
 
-        // Output to app
 
-        document.getElementById('events').innerHTML += jsonData;
-      })
-      .catch(function(error){
-        console.log(error);
-      });
+
+          console.log(jsonData);
+
+
+          // Output to app
+
+          document.getElementById('events').innerHTML += jsonData;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     }
   </script>
 </body>
+
 </html>
