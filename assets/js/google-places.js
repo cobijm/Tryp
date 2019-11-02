@@ -1,4 +1,4 @@
-var placeSearch, autocomplete, geocoder, place;
+var placeSearch, autocomplete, geocoder, finalLocation;
 
 function initAutocomplete() {
   geocoder = new google.maps.Geocoder();
@@ -20,8 +20,8 @@ function codeAddress(address) {
   }
 
 function fillInAddress() {
-  place = autocomplete.getPlace();
-  alert(place.place_id);
+  finalLocation = autocomplete.getPlace();
+  alert(finalLocation.place_id);
   //   codeAddress(document.getElementById('autocomplete').value);
 }
 
@@ -39,7 +39,7 @@ function fillInAddress() {
       // Prevent actual submit
       e.preventDefault();
 
-      var location = place.place_id;
+      var location = finalLocation;
 
       axios.get('https://maps.googleapis.com/maps/api/geocode/json',{
         params:{
@@ -78,11 +78,43 @@ function fillInAddress() {
             <li class="list-group-item"><strong>Longitude</strong>: ${lng}</li>
           </ul>
         `;
+			       var jsonData =[];
+
+        var combinedCoords = lat + "," + lng;
+        $.ajax({
+          type:"GET",
+          url:"https://app.ticketmaster.com/discovery/v2/events.json?apikey=bXjttOho3RvIAZAjzKZpfVgg4gbFFMcv&latlong=" + combinedCoords,
+          async:true,
+          dataType: "json",
+          success: function(json) {
+              console.log(json);
+              // Parse the response.
+              var e = document.getElementById("events");
+              showEvents(json);
+			  document.getElementById('events').innerHTML = jsonData.join("<br/>");
+;
+
+              // Do other things.
+           },
+          error: function(xhr, status, err) {
+              // This time, we do not end up here!
+              console.log(error);
+           }
+        })
+        function showEvents(json){
+          for(var i = 0; i < json.page.size; i++){
+			jsonData.push(json._embedded.events[i].name );
+
+          }
+        }
+          
+
+        console.log(jsonData);
+
 
         // Output to app
-        document.getElementById('formatted-address').innerHTML = formattedAddressOutput;
-        document.getElementById('address-components').innerHTML = addressComponentsOutput;
-        document.getElementById('geometry').innerHTML = geometryOutput;
+
+        document.getElementById('events').innerHTML += jsonData;
       })
       .catch(function(error){
         console.log(error);

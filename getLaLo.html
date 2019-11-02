@@ -36,7 +36,7 @@
       // Prevent actual submit
       e.preventDefault();
 
-      var location = document.getElementById('location-input').value;
+      var location = "ames"//document.getElementById('location-input').value;
 
       axios.get('https://maps.googleapis.com/maps/api/geocode/json',{
         params:{
