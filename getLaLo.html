@@ -20,12 +20,14 @@
     <div class="card-block" id="formatted-address"></div>
     <div class="card-block" id="address-components"></div>
     <div class="card-block" id="geometry"></div>
-    <div class="card-block" id="parsedEvents"></div>
+	<p id="events"></p>
+
   </div>
 
   <script>
     // Call Geocode
     //geocode();
+     var jsonData =[];
 
     // Get location form
     var locationForm = document.getElementById('location-form');
@@ -88,6 +90,9 @@
               // Parse the response.
               var e = document.getElementById("events");
               showEvents(json);
+			  document.getElementById('events').innerHTML = jsonData.join("<br/>");
+;
+
               // Do other things.
            },
           error: function(xhr, status, err) {
@@ -95,21 +100,23 @@
               console.log(error);
            }
         })
-        
-        var jsonData = [];
         function showEvents(json){
           for(var i = 0; i < json.page.size; i++){
-            $("events").append("<p>" + json._embedded.events[i].name+"</p>");
-            jsonData.push(json._embedded.events[i].name);
+			jsonData.push(json._embedded.events[i].name );
+
           }
         }
+          
+
+        console.log(jsonData);
+
 
         // Output to app
         document.getElementById('formatted-address').innerHTML = formattedAddressOutput;
         document.getElementById('address-components').innerHTML = addressComponentsOutput;
-        document.getElementById('geometry').innerHTML = geometryOutput;
+       document.getElementById('geometry').innerHTML = geometryOutput;
         console.log(jsonData);
-        //document.getElementById('parsedEvents').innerHTML = jsonData;
+        document.getElementById('events').innerHTML = jsonData;
       })
       .catch(function(error){
         console.log(error);
