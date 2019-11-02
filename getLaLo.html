@@ -22,6 +22,8 @@
     </form>
     <div class="card-block" id="events"></div>
     <div class="card-block" id="id"></div>
+    <div class="card-block" id="myimage"></div>
+
 
   </div>
 
@@ -39,7 +41,7 @@
       // Prevent actual submit
       e.preventDefault();
 
-      var location = "ames"//document.getElementById('location-input').value;
+      var location = document.getElementById('location-input').value;
 
       axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
         params: {
@@ -80,6 +82,7 @@
         `;
           var jsonData = [];
           var jsonID = [];
+          var jsonImage = [];
 
           var combinedCoords = lat + "," + lng;
           $.ajax({
@@ -94,7 +97,15 @@
               showEvents(json);
               document.getElementById('events').innerHTML = jsonData.join("<br/>");
               document.getElementById('id').innerHTML = jsonID.join("<br/>");
-              ;
+			  document.getElementById('myimage').src = jsonImage.join("<br/>");
+ for (i=0;i<jsonImage.length;i++) 
+ {
+
+document.write("<li><img src='" + jsonImage[i] + "'width="160" height="120"></li>");
+ 
+}
+
+              
 
               // Do other things.
             },
@@ -107,7 +118,8 @@
             for (var i = 0; i < json.page.size; i++) {
               jsonData.push(json._embedded.events[i].name);
               jsonID.push(json._embedded.events[i].id);
-              console.log(jsonID);
+			  jsonImage.push(json._embedded.events[i].images[0].url);
+
             }
           }
 
@@ -119,7 +131,9 @@
 
           // Output to app
 
-          document.getElementById('events').innerHTML += jsonData;
+          //document.getElementById('events').innerHTML += jsonData;
+		   //document.getElementById('myimage').innerHTML += jsonImage;
+
         })
         .catch(function (error) {
           console.log(error);
