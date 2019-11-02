@@ -21,7 +21,7 @@ function codeAddress(address) {
 
 function fillInAddress() {
   finalLocation = autocomplete.getPlace();
-  alert(finalLocation.place_id);
+  //alert(finalLocation.place_id);
   //   codeAddress(document.getElementById('autocomplete').value);
 }
 
@@ -30,10 +30,10 @@ function fillInAddress() {
     //geocode();
 
     // Get location form
-    var locationForm = document.getElementById('location-form');
+    //var locationForm = document.getElementById('location-form');
 
     // Listen for submiot
-    locationForm.addEventListener('submit', geocode);
+    //locationForm.addEventListener('submit', geocode);
 
     function geocode(e){
       // Prevent actual submit
@@ -51,17 +51,10 @@ function fillInAddress() {
         // Log full response
         console.log(response);
 
-        // Formatted Address
-        var formattedAddress = response.data.results[0].formatted_address;
-        var formattedAddressOutput = `
-          <ul class="list-group">
-            <li class="list-group-item">${formattedAddress}</li>
-          </ul>
-        `;
 
         // Address Components
         var addressComponents = response.data.results[0].address_components;
-        var addressComponentsOutput = '<ul class="list-group">';
+
         for(var i = 0;i < addressComponents.length;i++){
           addressComponentsOutput += `
             <li class="list-group-item"><strong>${addressComponents[i].types[0]}</strong>: ${addressComponents[i].long_name}</li>
@@ -72,12 +65,7 @@ function fillInAddress() {
         // Geometry
         var lat = response.data.results[0].geometry.location.lat;
         var lng = response.data.results[0].geometry.location.lng;
-        var geometryOutput = `
-          <ul class="list-group">
-            <li class="list-group-item"><strong>Latitude</strong>: ${lat}</li>
-            <li class="list-group-item"><strong>Longitude</strong>: ${lng}</li>
-          </ul>
-        `;
+
 			       var jsonData =[];
 
         var combinedCoords = lat + "," + lng;
@@ -89,7 +77,6 @@ function fillInAddress() {
           success: function(json) {
               console.log(json);
               // Parse the response.
-              var e = document.getElementById("events");
               showEvents(json);
 			  document.getElementById('events').innerHTML = jsonData.join("<br/>");
 ;
@@ -110,11 +97,12 @@ function fillInAddress() {
           
 
         console.log(jsonData);
-
+        alert(jsonData);
 
         // Output to app
 
-        document.getElementById('events').innerHTML += jsonData;
+        innerHTML += jsonData;
+        //document.getElementById('events').innerHTML += jsonData;
       })
       .catch(function(error){
         console.log(error);
