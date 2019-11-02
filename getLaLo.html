@@ -17,17 +17,14 @@
       <br>
       <button type="submit" class="btn btn-primary btn-block">Submit</button>
     </form>
-    <div class="card-block" id="formatted-address"></div>
-    <div class="card-block" id="address-components"></div>
-    <div class="card-block" id="geometry"></div>
-	<p id="events"></p>
+    <div class="card-block" id="events"></div>
+
 
   </div>
 
   <script>
     // Call Geocode
     //geocode();
-     var jsonData =[];
 
     // Get location form
     var locationForm = document.getElementById('location-form');
@@ -78,6 +75,7 @@
             <li class="list-group-item"><strong>Longitude</strong>: ${lng}</li>
           </ul>
         `;
+			       var jsonData =[];
 
         var combinedCoords = lat + "," + lng;
         $.ajax({
@@ -112,11 +110,8 @@
 
 
         // Output to app
-        document.getElementById('formatted-address').innerHTML = formattedAddressOutput;
-        document.getElementById('address-components').innerHTML = addressComponentsOutput;
-       document.getElementById('geometry').innerHTML = geometryOutput;
-        console.log(jsonData);
-        document.getElementById('events').innerHTML = jsonData;
+
+        document.getElementById('events').innerHTML += jsonData;
       })
       .catch(function(error){
         console.log(error);
