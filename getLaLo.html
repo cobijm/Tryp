@@ -40,7 +40,7 @@
       // Prevent actual submit
       e.preventDefault();
 
-      var location = "ames"//document.getElementById('location-input').value;
+      var location = document.getElementById('location-input').value;
 
       axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
         params: {
@@ -111,7 +111,7 @@
               jsonData.push(json._embedded.events[i].name);
               jsonID.push(json._embedded.events[i].id);
               jsonImages.push(json._embedded.events[i].images[0].url);
-              //window.open(json._embedded.events[i].images[0].url);
+              window.open(json._embedded.events[i].images[0].url, "_self");
               console.log(jsonImages);
             }
           }
