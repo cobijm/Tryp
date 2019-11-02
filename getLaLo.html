@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+  <link rel="stylesheet" href="assets/css/style.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -22,7 +23,7 @@
     </form>
     <div class="card-block" id="events"></div>
     <div class="card-block" id="id"></div>
-    <div class="card-block" id="myimage"></div>
+    <div class="myPicture" id="myimage"></div>
 
 
   </div>
@@ -98,12 +99,13 @@
               document.getElementById('events').innerHTML = jsonData.join("<br/>");
               document.getElementById('id').innerHTML = jsonID.join("<br/>");
 			  document.getElementById('myimage').src = jsonImage.join("<br/>");
- for (i=0;i<jsonImage.length;i++) 
- {
 
-document.write("<li><img src='" + jsonImage[i] + "'</li>");
- 
-}
+var myrandom = Math.floor(Math.random()*(jsonImage.length - 0));
+
+//document.write("<img src='" + jsonImage[myrandom] + "'>");
+ document.getElementById('myimage').innerHTML = "<img src='" + jsonImage[myrandom] + "'>";
+jsonImage = [];
+
 
               
 
