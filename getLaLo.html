@@ -6,6 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
   <title>My Geocode App</title>
 </head>
 <body>
@@ -19,6 +20,7 @@
     <div class="card-block" id="formatted-address"></div>
     <div class="card-block" id="address-components"></div>
     <div class="card-block" id="geometry"></div>
+    <div class="card-block" id="parsedEvents"></div>
   </div>
 
   <script>
@@ -75,10 +77,39 @@
           </ul>
         `;
 
+        var combinedCoords = lat + "," + lng;
+        $.ajax({
+          type:"GET",
+          url:"https://app.ticketmaster.com/discovery/v2/events.json?apikey=bXjttOho3RvIAZAjzKZpfVgg4gbFFMcv&latlong=" + combinedCoords,
+          async:true,
+          dataType: "json",
+          success: function(json) {
+              console.log(json);
+              // Parse the response.
+              var e = document.getElementById("events");
+              showEvents(json);
+              // Do other things.
+           },
+          error: function(xhr, status, err) {
+              // This time, we do not end up here!
+              console.log(error);
+           }
+        })
+        
+        var jsonData = [];
+        function showEvents(json){
+          for(var i = 0; i < json.page.size; i++){
+            $("events").append("<p>" + json._embedded.events[i].name+"</p>");
+            jsonData.push(json._embedded.events[i].name);
+          }
+        }
+
         // Output to app
         document.getElementById('formatted-address').innerHTML = formattedAddressOutput;
         document.getElementById('address-components').innerHTML = addressComponentsOutput;
         document.getElementById('geometry').innerHTML = geometryOutput;
+        console.log(jsonData);
+        //document.getElementById('parsedEvents').innerHTML = jsonData;
       })
       .catch(function(error){
         console.log(error);
